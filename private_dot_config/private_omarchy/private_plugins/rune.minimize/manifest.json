@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "rune.minimize",
+  "name": "Minimize",
+  "version": "0.1.0",
+  "author": "Rune Balstad",
+  "description": "Invisible click target: left-click minimizes the active window, right-click brings the last one back.",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Minimize",
+    "description": "Left-click minimizes the active window, right-click restores the last one",
+    "category": "System",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}

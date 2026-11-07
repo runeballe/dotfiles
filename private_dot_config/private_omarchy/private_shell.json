@@ -129,6 +129,9 @@
         },
         {
           "id": "dev.momoi-labs.pane-manager"
+        },
+        {
+          "id": "rune.minimize"
         }
       ],
       "tray": []

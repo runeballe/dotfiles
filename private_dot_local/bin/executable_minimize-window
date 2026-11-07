@@ -1,0 +1,63 @@
+#!/bin/bash
+# Minimize the active window, or bring back the last minimized one.
+#
+#   minimize-window minimize   hide the active window (tiled or floating)
+#   minimize-window restore    bring the most recently minimized window back
+#                              to the workspace in front of you
+#
+# Uses Omarchy's special:minimized workspace, so the dock on floating
+# workspaces still lists and restores these windows too. Omarchy's own
+# omarchy-hyprland-window-minimize only works on floating workspaces; this
+# one also handles tiled ones.
+set -u
+
+STACK="${XDG_RUNTIME_DIR:-/tmp}/minimize-window.stack"
+
+dispatch() { hyprctl dispatch "$1" >/dev/null; }
+
+minimize() {
+  local address workspace
+  read -r address workspace < <(hyprctl activewindow -j | jq -r '"\(.address // "") \(.workspace.id // "")"')
+  [[ $address =~ ^0x[0-9a-f]+$ && $workspace =~ ^[0-9]+$ ]] || exit 0
+
+  # Floating workspace: let Omarchy do it, so the dock bookkeeping matches.
+  if [[ $(omarchy-hyprland-workspace-layout-current "$workspace") == "floating" ]]; then
+    omarchy-hyprland-window-minimize "$address"
+  else
+    dispatch "hl.dsp.window.tag({ tag = \"+omarchy-minimized-from-$workspace\", window = \"address:$address\" })"
+    dispatch "hl.dsp.window.move({ workspace = \"special:minimized\", follow = false, window = \"address:$address\" })"
+    dispatch "hl.dsp.focus({ workspace = \"$workspace\" })"
+  fi
+  echo "$address" >>"$STACK"
+}
+
+restore() {
+  local minimized workspace address=""
+  minimized=$(hyprctl clients -j | jq -r '.[] | select(.workspace.name == "special:minimized") | .address')
+  [[ -n $minimized ]] || exit 0
+
+  # Newest entry in our stack that is still minimized; else any minimized window.
+  if [[ -f $STACK ]]; then
+    while read -r candidate; do
+      grep -qxF "$candidate" <<<"$minimized" && { address=$candidate; break; }
+    done < <(tac "$STACK")
+  fi
+  [[ -n $address ]] || address=$(tail -n1 <<<"$minimized")
+  [[ $address =~ ^0x[0-9a-f]+$ ]] || exit 0
+
+  workspace=$(hyprctl activeworkspace -j | jq -r '.id')
+  [[ $workspace =~ ^[0-9]+$ ]] || exit 0
+
+  dispatch "hl.dsp.window.move({ workspace = \"$workspace\", window = \"address:$address\" })"
+  dispatch "hl.dsp.focus({ window = \"address:$address\" })"
+  if [[ -f $STACK ]]; then
+    grep -vxF "$address" "$STACK" >"$STACK.tmp" || true
+    mv "$STACK.tmp" "$STACK"
+  fi
+}
+
+case "${1:-}" in
+  minimize) minimize ;;
+  restore) restore ;;
+  *) echo "usage: minimize-window minimize|restore" >&2; exit 2 ;;
+esac
