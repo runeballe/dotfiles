@@ -27,8 +27,21 @@ BarWidget {
     action.running = true
   }
 
+  Text {
+    anchors.centerIn: parent
+    text: "—"
+    color: Color.foreground
+    font.family: root.bar ? root.bar.fontFamily : Style.font.family
+    font.pixelSize: Math.round(root.barSize * 0.6)
+    font.bold: true
+    opacity: mouse.containsMouse ? 1.0 : 0.75
+  }
+
   MouseArea {
+    id: mouse
     anchors.fill: parent
+    hoverEnabled: true
+    cursorShape: Qt.PointingHandCursor
     acceptedButtons: Qt.LeftButton | Qt.RightButton
     onClicked: mouse => root.run(mouse.button === Qt.RightButton ? "restore" : "minimize")
   }
