@@ -1,0 +1,25 @@
+{
+  "monitorsSchema": 3,
+  "written": {
+    "idle-lock": "300",
+    "idle-screensaver": "150"
+  },
+  "hypr": {
+    "scroll-factor": 0.55,
+    "kb-layout": "no",
+    "blur-popups": true,
+    "blur-special": true,
+    "shadow": true,
+    "shadow-render-power": 4,
+    "shadow-range": 19
+  },
+  "hyprOriginal": {
+    "scroll-factor": 0.4,
+    "kb-layout": "us",
+    "blur-popups": false,
+    "blur-special": false,
+    "shadow": false,
+    "shadow-render-power": 3,
+    "shadow-range": 4
+  }
+}

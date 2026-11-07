@@ -1,0 +1,42 @@
+#!/usr/bin/env python3
+# Middle-click on a hyprbars titlebar closes that window.
+# Bound non-consuming to mouse:274, so a middle-click anywhere else still
+# reaches the app (paste, close browser tab, etc.). Titlebars only exist on
+# Omarchy floating workspaces (tag omarchy-floating-workspace) and sit above
+# the window's client box, BAR_HEIGHT pixels tall.
+import json
+import subprocess
+
+BAR_HEIGHT = 30
+TAG = "omarchy-floating-workspace"
+
+
+def hypr(*args):
+    return json.loads(subprocess.run(["hyprctl", "-j", *args], capture_output=True, text=True).stdout)
+
+
+def main():
+    cursor = hypr("cursorpos")
+    cx, cy = cursor["x"], cursor["y"]
+    visible = {m["activeWorkspace"]["id"] for m in hypr("monitors")}
+    clients = [c for c in hypr("clients") if c["mapped"] and not c["hidden"] and c["workspace"]["id"] in visible]
+
+    # Pointer over any window's content: that click belongs to the app.
+    for c in clients:
+        x, y = c["at"]
+        w, h = c["size"]
+        if x <= cx < x + w and y <= cy < y + h:
+            return
+
+    for c in clients:
+        if not any(t.rstrip("*") == TAG for t in c.get("tags", [])):
+            continue
+        x, y = c["at"]
+        w, _ = c["size"]
+        if x <= cx < x + w and y - BAR_HEIGHT <= cy < y:
+            subprocess.run(["hyprctl", "dispatch", f'hl.dsp.window.close({{ window = "address:{c["address"]}" }})'],
+                           capture_output=True)
+            return
+
+
+main()

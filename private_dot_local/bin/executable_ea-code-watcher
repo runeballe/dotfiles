@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Polls Gmail for new EA security code mails and copies the code to the clipboard.
+set -u
+
+export PATH="/home/rune/.local/share/mise/shims:/home/rune/.local/share/mise/installs/node/26.12.0/bin:$PATH"
+
+STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/ea-code-watcher"
+SEEN="$STATE_DIR/seen"
+INTERVAL=30
+QUERY='subject:"EA-sikkerhetskode" newer_than:1d'
+
+mkdir -p "$STATE_DIR"
+touch "$SEEN"
+
+list_ids() {
+  gws gmail users messages list \
+    --params "$(jq -nc --arg q "$QUERY" '{userId:"me",q:$q,maxResults:10}')" 2>/dev/null \
+    | jq -r '.messages[]?.id'
+}
+
+# On first start, mark existing mails as seen so an old code is not copied.
+if [ ! -s "$SEEN" ]; then
+  list_ids >> "$SEEN"
+fi
+
+while true; do
+  for id in $(list_ids | tac); do
+    grep -qx "$id" "$SEEN" && continue
+    subject=$(gws gmail users messages get \
+      --params "$(jq -nc --arg id "$id" '{userId:"me",id:$id,format:"metadata",metadataHeaders:["Subject"]}')" 2>/dev/null \
+      | jq -r '.payload.headers[]? | select(.name=="Subject") | .value')
+    code=$(grep -oE '[0-9]{6}' <<< "$subject" | tail -n1)
+    if [ -n "$code" ]; then
+      printf '%s' "$code" | wl-copy
+      notify-send -a "EA" "EA-sikkerhetskode kopiert" "$code"
+    fi
+    echo "$id" >> "$SEEN"
+  done
+  sleep "$INTERVAL"
+done

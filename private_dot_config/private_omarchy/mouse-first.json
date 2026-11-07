@@ -1,0 +1,42 @@
+{
+    "alwaysShowMenuDragZone": false,
+    "alwaysVisible": true,
+    "barSection": "left",
+    "buttonOrder": [
+        "float",
+        "minimize",
+        "maximize",
+        "close"
+    ],
+    "buttonVisible": {
+        "close": true,
+        "float": false,
+        "maximize": true,
+        "minimize": true
+    },
+    "centerNewWindows": true,
+    "colorMode": "theme",
+    "customAccent": "#7aa2f7",
+    "customBg": "#0e0e14",
+    "customFg": "#a9b1d6",
+    "customRed": "#f7768e",
+    "disableSnapping": false,
+    "disableTiling": true,
+    "dragFullWidth": true,
+    "enableMenuDrag": true,
+    "enableShortcuts": false,
+    "excludedClasses": [
+    ],
+    "globalMenuOffsetX": 0,
+    "globalMenuOffsetY": 0,
+    "ignoreDock": false,
+    "language": "en",
+    "minControlsWidth": 240,
+    "minimizeToBar": true,
+    "perWindowClassOffsets": {
+    },
+    "rememberMenuGlobal": false,
+    "rememberMenuPerWindow": false,
+    "showDragHandle": false,
+    "topEdgeMaximizes": false
+}

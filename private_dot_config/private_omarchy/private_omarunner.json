@@ -1,0 +1,16 @@
+{
+  "keys": {
+    "launcher": "SUPER + SPACE",
+    "apps": "SUPER + ALT + SPACE"
+  },
+  "sources": {
+    "menu": true,
+    "command": false,
+    "apps": false
+  },
+  "webSearchUrl": "https://duckduckgo.com/?q=",
+  "settings": {
+    "accent": "red",
+    "radius": 12
+  }
+}

@@ -1,0 +1,233 @@
+{
+  "bar": {
+    "background": "none",
+    "centerAnchor": "omarchy.clock",
+    "id": "io.github.deunnis.lacquer.shell",
+    "layout": {
+      "center": [
+        {
+          "id": "omarchy.keyboard-layout"
+        },
+        {
+          "id": "omarchy.system-update"
+        },
+        {
+          "id": "freber.sonos"
+        },
+        {
+          "density": "normal",
+          "fontSize": "small",
+          "id": "videinfra.omaudiopanel",
+          "scrollStep": 1,
+          "accent": "red",
+          "showHeaderInfo": false
+        },
+        {
+          "id": "tmn73.calendar",
+          "agendaPlacement": "below",
+          "announceLeadMinutes": 60,
+          "announceTitleLimit": 12,
+          "format": "HH:mm",
+          "formatAlt": "d MMMM 'W'ww yyyy",
+          "showNextUp": false,
+          "showQuickAdd": true,
+          "showShortcutLegend": true,
+          "showUpcomingDays": false,
+          "showYearProgress": true,
+          "verticalFormat": "h\n—\nmm\nAP",
+          "weekStartDay": "monday"
+        }
+      ],
+      "centerBegin": [
+        {
+          "id": "omarchy.elsewhen",
+          "cities": [
+            {
+              "name": "Oslo",
+              "zone": "Europe/Oslo"
+            },
+            {
+              "name": "Dubai",
+              "zone": "Asia/Dubai"
+            },
+            {
+              "name": "Tokyo",
+              "zone": "Asia/Tokyo"
+            },
+            {
+              "name": "Los Angeles",
+              "zone": "America/Los_Angeles"
+            },
+            {
+              "name": "New York",
+              "zone": "America/New_York"
+            }
+          ],
+          "hour24": true,
+          "units": "C"
+        }
+      ],
+      "centerEnd": [
+        {
+          "id": "quickshell.spotify",
+          "deviceName": "Omarchy Spotify",
+          "idleShutdownMinutes": 15,
+          "showMiniPlayer": "On",
+          "showVinylRecord": "On",
+          "shortcutPlayer": "Omarchy Music app",
+          "shortcutHints": "On",
+          "showLyrics": "On",
+          "showArtwork": "On",
+          "showTrackTitle": "On",
+          "showArtistName": "Off",
+          "showPausedTrack": "On",
+          "scrollBarText": "Off",
+          "scrollSpeed": "1",
+          "maxBarTextWidth": "240",
+          "fixedBarWidth": "Off",
+          "audioQuality": "320 kbps",
+          "clientId": ""
+        }
+      ],
+      "left": [
+        {
+          "id": "omarchy.menu"
+        },
+        {
+          "id": "omarchy.workspaces"
+        }
+      ],
+      "right": [
+        {
+          "id": "omarchy.tray"
+        },
+        {
+          "id": "io.github.vladkarok.oskar"
+        },
+        {
+          "id": "io.github.twiking.omacontrol"
+        },
+        {
+          "id": "io.github.juancasanueva.plugin-manager",
+          "openAs": "overlay",
+          "transactionLimit": 28
+        },
+        {
+          "id": "omarchy.agents"
+        },
+        {
+          "id": "io.github.thisisgm.flea-shelf"
+        },
+        {
+          "id": "omarchy.bluetooth"
+        },
+        {
+          "id": "jankeesvw.gmail-inbox"
+        },
+        {
+          "id": "omarchy.network"
+        },
+        {
+          "id": "dev.momoi-labs.pane-manager"
+        }
+      ],
+      "tray": []
+    },
+    "position": "top",
+    "transparent": true
+  },
+  "cloneSourceRestores": [
+    "hello-lock"
+  ],
+  "disabledPlugins": [
+    "omarchy.reminders",
+    "omarchy.lock"
+  ],
+  "dock": {
+    "pinned": [
+      "org.gnome.Nautilus",
+      "chromium",
+      "foot",
+      "omacalc",
+      "omawrite",
+      "Fred TV",
+      "YouTube"
+    ]
+  },
+  "idle": {
+    "lock": 300,
+    "screensaver": 150
+  },
+  "plugins": [
+    {
+      "id": "io.github.deunnis.lacquer"
+    },
+    {
+      "align": "center",
+      "autohide": true,
+      "backgroundOpacity": 0,
+      "border": false,
+      "borderOpacity": 0,
+      "cornerShape": "rounded",
+      "dodge": true,
+      "edge": "bottom",
+      "fullWidth": false,
+      "gaussianZoom": true,
+      "glow": false,
+      "glowAmount": 0.5,
+      "glowFocus": "full",
+      "hotspotHeight": 6,
+      "iconOpacity": 1,
+      "iconSize": 38,
+      "id": "animated.dock",
+      "items": [
+        {
+          "desktop": "chromium"
+        },
+        {
+          "desktop": "firefox"
+        },
+        {
+          "desktop": "com.thisisgm.flea"
+        },
+        {
+          "desktop": "org.gnome.Nautilus"
+        }
+      ],
+      "labels": true,
+      "magnify": true,
+      "monochrome": false,
+      "padding": 8,
+      "pressure": true,
+      "runningIndicator": "dot",
+      "showWhenEmpty": true,
+      "spacing": 4,
+      "tileOpacity": 0.15,
+      "tiles": false,
+      "tintIcons": false,
+      "tintRunning": true,
+      "tooltips": false,
+      "zoom": 1,
+      "blur": true
+    },
+    {
+      "id": "io.github.mtolhuys.fathom"
+    },
+    {
+      "id": "mirador"
+    },
+    {
+      "id": "videinfra.omarunner"
+    },
+    {
+      "id": "hello-lock"
+    },
+    {
+      "id": "k4ditano.omascreen"
+    },
+    {
+      "id": "io.github.smoothpixels.cursor-accent"
+    }
+  ],
+  "version": 1
+}

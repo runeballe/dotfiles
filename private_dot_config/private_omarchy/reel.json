@@ -1,0 +1,12 @@
+{
+  "codec": "h264",
+  "container": "mp4",
+  "countdown": 10,
+  "cursor": "off",
+  "desktopAudio": "off",
+  "filenamePrefix": "",
+  "fps": 120,
+  "manualZoom": "on",
+  "resolution": "3840x2160",
+  "webcam": "off"
+}

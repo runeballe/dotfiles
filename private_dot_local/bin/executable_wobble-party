@@ -1,0 +1,141 @@
+#!/usr/bin/env bash
+# Wobble Party launcher.
+#
+#   wobble-party            open the party (focus it if it is already open)
+#   wobble-party toggle     open it, or close it if it is open
+#   wobble-party stop       close it
+#   wobble-party status     print "running" or "stopped"
+#
+# The party is a Chromium app window on http://wobble.localhost:PORT/ served
+# by wobble-brain, which listens to whatever the desktop is playing (cliamp,
+# Spotify in the browser, anything on the default output). Chromium resolves
+# *.localhost to loopback, and the host gives the window a class of its own
+# (chrome-wobble.localhost__-Default) for Hyprland rules.
+
+set -euo pipefail
+
+PORT="${WOBBLE_PARTY_PORT:-7477}"
+URL="http://wobble.localhost:$PORT/"
+CLASS_RE='^chrome-wobble\.localhost__'
+STATE="${XDG_STATE_HOME:-$HOME/.local/state}/wobble-party"
+HERE="$(cd -- "$(dirname -- "$(readlink -f -- "${BASH_SOURCE[0]}")")" && pwd)"
+# The brain installed next to this launcher, never whatever is first on PATH.
+BRAIN="$HERE/wobble-brain"
+LOG="$STATE/brain.log"
+
+# Everything below writes into STATE (log, browser profile), so it must be a
+# real directory we own, never a symlink to somewhere else.
+mkdir -p -m 700 -- "$STATE"
+if [[ -L $STATE || ! -d $STATE || ! -O $STATE ]]; then
+  notify-send -u critical "Wobble Party" "$STATE must be a directory you own, not a link"
+  exit 1
+fi
+chmod 700 -- "$STATE"
+
+window() {
+  hyprctl clients -j 2>/dev/null | jq -r --arg re "$CLASS_RE" 'first(.[] | select(.class | test($re)) | .address) // empty'
+}
+
+# Hyprland 0.56 (Omarchy 4) takes Lua after `hyprctl dispatch`; older builds
+# take the classic dispatcher. Try Lua first, fall back — as Omarchy does.
+focus_window() {
+  hyprctl dispatch "hl.dsp.focus({ window = \"address:$1\" })" >/dev/null 2>&1 ||
+    hyprctl dispatch focuswindow "address:$1" >/dev/null
+}
+
+close_window() {
+  hyprctl dispatch "hl.dsp.window.close({ window = \"address:$1\" })" >/dev/null 2>&1 ||
+    hyprctl dispatch closewindow "address:$1" >/dev/null
+}
+
+# PID of whatever of ours is listening on PORT (ss only shows our processes).
+listener_pid() {
+  ss -Hltnp "sport = :$PORT" 2>/dev/null | grep -o 'pid=[0-9]*' | head -n1 | cut -d= -f2
+}
+
+port_taken() {
+  [[ -n $(ss -Hltn "sport = :$PORT" 2>/dev/null) ]]
+}
+
+# Up only if the listener is our brain binary, not just anything on the port.
+# (Just after an upgrade the old brain's exe reads "<path> (deleted)".)
+brain_up() {
+  local pid exe
+  pid="$(listener_pid)"
+  [[ -n $pid ]] || return 1
+  exe="$(readlink -- "/proc/$pid/exe" 2>/dev/null)"
+  [[ ${exe% (deleted)} == "$(readlink -f -- "$BRAIN")" ]] &&
+    curl -fs -m 1 "http://127.0.0.1:$PORT/health" >/dev/null 2>&1
+}
+
+start_brain() {
+  brain_up && return 0
+  [[ -x $BRAIN ]] || {
+    notify-send -u critical "Wobble Party" "wobble-brain is not installed — run packaging/install.sh"
+    exit 1
+  }
+  if port_taken; then
+    notify-send -u critical "Wobble Party" "Port $PORT is in use by another program (set WOBBLE_PARTY_PORT to use another)"
+    exit 1
+  fi
+  # Our own log only: never append through a symlink; keep it small.
+  [[ -L $LOG || (-e $LOG && ! -f $LOG) ]] && rm -f -- "$LOG"
+  [[ -f $LOG && $(stat -c %s -- "$LOG") -gt 1048576 ]] && mv -f -- "$LOG" "$LOG.old"
+  # Exits by itself a few seconds after the last window closes.
+  setsid "$BRAIN" serve --port "$PORT" --exit-when-idle 6 >>"$LOG" 2>&1 </dev/null &
+  for _ in $(seq 60); do
+    brain_up && return 0
+    sleep 0.1
+  done
+  notify-send -u critical "Wobble Party" "The wobble brain did not start — see $LOG"
+  exit 1
+}
+
+open_window() {
+  local chromium
+  chromium="$(command -v chromium || command -v chromium-browser || true)"
+  if [[ -z $chromium ]]; then
+    # No Chromium: fall back to Omarchy's web-app launcher (default browser).
+    exec omarchy-launch-webapp "$URL"
+  fi
+  # A profile of its own keeps the party out of the user's browser session.
+  exec setsid uwsm-app -- "$chromium" --app="$URL" \
+    --user-data-dir="$STATE/chromium" \
+    --no-first-run --no-default-browser-check \
+    --disable-features=Translate \
+    --autoplay-policy=no-user-gesture-required
+}
+
+case "${1:-open}" in
+  open | start)
+    if addr="$(window)" && [[ -n $addr ]]; then
+      focus_window "$addr"
+      exit 0
+    fi
+    start_brain
+    open_window
+    ;;
+  toggle)
+    if addr="$(window)" && [[ -n $addr ]]; then
+      close_window "$addr"
+    else
+      start_brain
+      open_window
+    fi
+    ;;
+  stop)
+    if addr="$(window)" && [[ -n $addr ]]; then
+      close_window "$addr"
+    fi
+    ;;
+  status)
+    if [[ -n "$(window)" ]]; then echo running; else echo stopped; fi
+    ;;
+  -h | --help | help)
+    sed -n '2,15p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+    ;;
+  *)
+    echo "wobble-party: unknown command '$1' (try --help)" >&2
+    exit 2
+    ;;
+esac
