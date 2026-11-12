@@ -1,0 +1,141 @@
+{
+  "name": "rune",
+  "created_at": "2026-11-07T18:21:39.354221438Z",
+  "updated_at": "2026-11-09T14:00:25.116915576Z",
+  "outputs": [
+    {
+      "key": "samsung electric company|samsung|0x01000000",
+      "match_key": "samsung electric company|samsung|0x01000000",
+      "name": "HDMI-A-1",
+      "description": "Samsung Electric Company SAMSUNG 0x01000000",
+      "make": "Samsung Electric Company",
+      "model": "SAMSUNG",
+      "serial": "0x01000000",
+      "enabled": true,
+      "mode": "3840x2160@30.00Hz",
+      "width": 3840,
+      "height": 2160,
+      "refresh": 30,
+      "x": 0,
+      "y": 0,
+      "scale": 2,
+      "transform": 0,
+      "bitdepth": 10,
+      "cm": "srgb",
+      "sdr_brightness": 1,
+      "sdr_saturation": 1,
+      "sdr_min_luminance": 0.2,
+      "sdr_max_luminance": 80,
+      "min_luminance": 0,
+      "sdr_eotf": "default"
+    },
+    {
+      "key": "dell inc.|dell u2419h|hwcdks2",
+      "match_key": "dell inc.|dell u2419h|hwcdks2",
+      "name": "DP-2",
+      "description": "Dell Inc. DELL U2419H HWCDKS2",
+      "make": "Dell Inc.",
+      "model": "DELL U2419H",
+      "serial": "HWCDKS2",
+      "enabled": false,
+      "mode": "1920x1080@60.00Hz",
+      "width": 1920,
+      "height": 1080,
+      "refresh": 60,
+      "x": 360,
+      "y": 1080,
+      "scale": 1.6,
+      "transform": 0,
+      "bitdepth": 8,
+      "cm": "srgb",
+      "sdr_brightness": 1,
+      "sdr_saturation": 1.05,
+      "sdr_min_luminance": 0.2,
+      "sdr_max_luminance": 80,
+      "min_luminance": 0,
+      "supports_wide_color": -1
+    },
+    {
+      "key": "lg display|0x05a2",
+      "match_key": "lg display|0x05a2",
+      "name": "eDP-1",
+      "description": "LG Display 0x05A2",
+      "make": "LG Display",
+      "model": "0x05A2",
+      "enabled": false,
+      "mode": "1920x1080@60.02Hz",
+      "width": 1920,
+      "height": 1080,
+      "refresh": 60.02,
+      "x": -1,
+      "y": -1,
+      "scale": 1,
+      "transform": 0,
+      "bitdepth": 8,
+      "cm": "srgb",
+      "sdr_brightness": 1,
+      "sdr_saturation": 1,
+      "sdr_min_luminance": 0.2,
+      "sdr_max_luminance": 80,
+      "min_luminance": 0
+    }
+  ],
+  "workspaces": {
+    "enabled": false,
+    "strategy": "interleave",
+    "max_workspaces": 31,
+    "group_size": 3,
+    "monitor_order": [
+      "samsung electric company|samsung|0x01000000",
+      "dell inc.|dell u2419h|hwcdks2",
+      "lg display|0x05a2"
+    ],
+    "rules": [
+      {
+        "workspace": "1",
+        "output_key": ""
+      },
+      {
+        "workspace": "3",
+        "output_key": ""
+      },
+      {
+        "workspace": "4",
+        "output_key": ""
+      },
+      {
+        "workspace": "5",
+        "output_key": ""
+      },
+      {
+        "workspace": "11",
+        "output_key": ""
+      },
+      {
+        "workspace": "12",
+        "output_key": ""
+      },
+      {
+        "workspace": "13",
+        "output_key": ""
+      },
+      {
+        "workspace": "14",
+        "output_key": ""
+      },
+      {
+        "workspace": "15",
+        "output_key": ""
+      },
+      {
+        "workspace": "31",
+        "output_key": ""
+      },
+      {
+        "workspace": "special:qconsole",
+        "output_key": ""
+      }
+    ]
+  },
+  "exec": ""
+}
