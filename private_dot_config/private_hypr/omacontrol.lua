@@ -74,10 +74,14 @@ hl.animation({ leaf = "fadeLayersOut", enabled = true, speed = 1.946, bezier = "
 hl.animation({ leaf = "workspaces", enabled = false })
 
 -- Workspaces set up from the Workspaces page.
-hl.workspace_rule({ workspace = "1", gaps_in = 0, gaps_out = 0, no_border = true, no_rounding = true, decorate = false })
+hl.workspace_rule({ workspace = "1", gaps_in = 0, gaps_out = 0, no_rounding = true })
 hl.monitor({
   output = "desc:Dell Inc. DELL U2419H HWCDKS2",
-  disabled = true,
+  mode = "1920x1080@60.00",
+  scale = 1.6,
+  transform = 0,
+  vrr = 0,
+  position = "720x1080",
 })
 
 hl.monitor({
@@ -86,7 +90,5 @@ hl.monitor({
   scale = 2,
   transform = 0,
   vrr = 0,
-  cm = "hdr",
-  bitdepth = 10,
 })
 

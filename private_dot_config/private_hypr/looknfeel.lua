@@ -58,6 +58,11 @@
 -- Written by Lacquer. Safe to hand-edit: Lacquer re-reads this block
 -- every time it opens, and only ever rewrites what's between the fences.
 hl.config({
+  cursor = {
+    hide_on_key_press = true,
+    inactive_timeout = 1,
+  },
+
   decoration = {
     rounding_power = 1,
   },
@@ -71,3 +76,27 @@ hl.config({
   },
 })
 -- <<< lacquer managed block <<<
+
+-- Animated gradient window border (pink/orange, ported from the Hyper hyperBorder config).
+hl.config({
+  general = {
+    border_size = 4,
+    col = {
+      active_border = { colors = { "rgba(fc1da7ff)", "rgba(fba506ff)", "rgba(fc1da7ff)", "rgba(fba506ff)" }, angle = 180 },
+      inactive_border = { colors = { "rgba(fc1da7ff)", "rgba(fba506ff)" }, angle = 180 },
+    },
+  },
+  decoration = {
+    rounding = 20,
+    active_opacity = 1.0,
+  },
+})
+
+-- Spin the gradient continuously. speed is in tenths of a second per full
+-- rotation: 1 = 0.1s (very fast), 30 = 3s, 80 = 8s.
+hl.animation({ leaf = "borderangle", enabled = true, speed = 20, bezier = "linear", style = "loop" })
+
+-- Focused windows fully opaque; unfocused keep Omarchy's 0.96 transparency.
+o.transparent_window({ tag = "terminal" }, "1.0 0.96")
+o.transparent_window("(omawrite|1[pP]assword|com\\.onepassword\\.OnePassword|org\\.gnome\\.Nautilus)", "1.0 0.96")
+o.transparent_window({ tag = "transparent" }, "1.0 0.96")
