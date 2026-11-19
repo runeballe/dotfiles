@@ -9,38 +9,44 @@
           "id": "omarchy.keyboard-layout"
         },
         {
-          "id": "omarchy.system-update"
-        },
-        {
-          "id": "freber.sonos"
-        },
-        {
-          "density": "normal",
-          "fontSize": "small",
-          "id": "videinfra.omaudiopanel",
-          "scrollStep": 1,
-          "accent": "red",
-          "showHeaderInfo": false
+          "host": "192.168.1.45",
+          "id": "rune.sonos-sound"
         },
         {
           "id": "tmn73.calendar",
-          "agendaPlacement": "below",
+          "agendaPlacement": "beside",
           "announceLeadMinutes": 60,
           "announceTitleLimit": 12,
           "format": "HH:mm",
           "formatAlt": "d MMMM 'W'ww yyyy",
-          "showNextUp": false,
+          "showNextUp": true,
           "showQuickAdd": true,
           "showShortcutLegend": true,
-          "showUpcomingDays": false,
+          "showUpcomingDays": true,
           "showYearProgress": true,
           "verticalFormat": "h\n—\nmm\nAP",
-          "weekStartDay": "monday"
+          "weekStartDay": "monday",
+          "hiddenCalendars": [
+            "ics-9553ecb8de56"
+          ],
+          "language": "auto",
+          "showWorkingLocation": true,
+          "hideDeclined": true,
+          "showLunarDates": false,
+          "reminderDetails": true,
+          "birthYear": {{ .birthYear }}
+        },
+        {
+          "accent": "red",
+          "density": "normal",
+          "fontSize": "small",
+          "id": "videinfra.omaudiopanel",
+          "scrollStep": 1,
+          "showHeaderInfo": false
         }
       ],
       "centerBegin": [
         {
-          "id": "omarchy.elsewhen",
           "cities": [
             {
               "name": "Oslo",
@@ -64,42 +70,43 @@
             }
           ],
           "hour24": true,
+          "id": "omarchy.elsewhen",
           "units": "C"
         }
       ],
       "centerEnd": [
         {
-          "id": "quickshell.spotify",
+          "audioQuality": "320 kbps",
+          "clientId": "",
           "deviceName": "Omarchy Spotify",
+          "fixedBarWidth": "Off",
+          "id": "quickshell.spotify",
           "idleShutdownMinutes": 15,
-          "showMiniPlayer": "On",
-          "showVinylRecord": "On",
-          "shortcutPlayer": "Omarchy Music app",
-          "shortcutHints": "On",
-          "showLyrics": "On",
-          "showArtwork": "On",
-          "showTrackTitle": "On",
-          "showArtistName": "Off",
-          "showPausedTrack": "On",
+          "maxBarTextWidth": "240",
           "scrollBarText": "Off",
           "scrollSpeed": "1",
-          "maxBarTextWidth": "240",
-          "fixedBarWidth": "Off",
-          "audioQuality": "320 kbps",
-          "clientId": ""
+          "shortcutHints": "On",
+          "shortcutPlayer": "Omarchy Music app",
+          "showArtistName": "Off",
+          "showArtwork": "On",
+          "showLyrics": "On",
+          "showMiniPlayer": "On",
+          "showPausedTrack": "On",
+          "showTrackTitle": "On",
+          "showVinylRecord": "On"
         }
       ],
       "left": [
         {
           "id": "omarchy.menu"
-        },
-        {
-          "id": "omarchy.workspaces"
         }
       ],
       "right": [
         {
           "id": "omarchy.tray"
+        },
+        {
+          "id": "jack.display"
         },
         {
           "id": "io.github.vladkarok.oskar"
@@ -109,42 +116,43 @@
         },
         {
           "id": "io.github.juancasanueva.plugin-manager",
-          "openAs": "overlay",
-          "transactionLimit": 28
+          "openAs": "popup",
+          "transactionLimit": 36
         },
         {
           "id": "omarchy.agents"
         },
         {
-          "id": "io.github.thisisgm.flea-shelf"
-        },
-        {
           "id": "omarchy.bluetooth"
-        },
-        {
-          "id": "jankeesvw.gmail-inbox"
         },
         {
           "id": "omarchy.network"
         },
         {
-          "id": "dev.momoi-labs.pane-manager"
+          "id": "rune.window-actions"
         },
         {
-          "id": "rune.minimize"
+          "id": "rune.display-brightness"
         }
       ],
-      "tray": []
+      "tray": [
+        {
+          "id": "freber.sonos"
+        }
+      ]
     },
     "position": "top",
-    "transparent": true
+    "transparent": false
   },
   "cloneSourceRestores": [
     "hello-lock"
   ],
   "disabledPlugins": [
     "omarchy.reminders",
-    "omarchy.lock"
+    "omarchy.lock",
+    "omarchy.dock",
+    "omarchy.clipboard",
+    "omarchy.disk-speedtest"
   ],
   "dock": {
     "pinned": [
@@ -153,65 +161,17 @@
       "foot",
       "omacalc",
       "omawrite",
-      "Fred TV",
-      "YouTube"
-    ]
+      "Fred TV"
+    ],
+    "position": "right"
   },
   "idle": {
-    "lock": 300,
-    "screensaver": 150
+    "lock": 3600,
+    "screensaver": 3600
   },
   "plugins": [
     {
       "id": "io.github.deunnis.lacquer"
-    },
-    {
-      "align": "center",
-      "autohide": true,
-      "backgroundOpacity": 0,
-      "border": false,
-      "borderOpacity": 0,
-      "cornerShape": "rounded",
-      "dodge": true,
-      "edge": "bottom",
-      "fullWidth": false,
-      "gaussianZoom": true,
-      "glow": false,
-      "glowAmount": 0.5,
-      "glowFocus": "full",
-      "hotspotHeight": 6,
-      "iconOpacity": 1,
-      "iconSize": 38,
-      "id": "animated.dock",
-      "items": [
-        {
-          "desktop": "chromium"
-        },
-        {
-          "desktop": "firefox"
-        },
-        {
-          "desktop": "com.thisisgm.flea"
-        },
-        {
-          "desktop": "org.gnome.Nautilus"
-        }
-      ],
-      "labels": true,
-      "magnify": true,
-      "monochrome": false,
-      "padding": 8,
-      "pressure": true,
-      "runningIndicator": "dot",
-      "showWhenEmpty": true,
-      "spacing": 4,
-      "tileOpacity": 0.15,
-      "tiles": false,
-      "tintIcons": false,
-      "tintRunning": true,
-      "tooltips": false,
-      "zoom": 1,
-      "blur": true
     },
     {
       "id": "io.github.mtolhuys.fathom"
