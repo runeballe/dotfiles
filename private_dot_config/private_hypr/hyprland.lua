@@ -22,6 +22,9 @@ require("default.hypr.omarchy")
 require("hypr.monitors")
 require("hypr.input")
 require("hypr.bindings")
+require("hypr.snap") -- Windows-style snapping (drag to edges, SUPER+arrows)
+require("hypr.desktop") -- SUPER+D show desktop
+require("hypr.no-workspaces") -- one desktop per screen, workspace keys off
 require("hypr.looknfeel")
 require("hypr.autostart")
 
@@ -39,3 +42,6 @@ require("default.hypr.toggles")
 
 -- Load settings written by OmaSettings (omasettings:managed).
 require("hypr.omasettings")
+
+-- Added by hyprmoncfg: its generated monitor rules load last, so nothing before this can override the applied layout.
+do local path = os.getenv("HOME") .. "/.config/hypr/hyprmoncfg-monitors.lua"; local file = io.open(path, "r"); if file then file:close(); dofile(path) end end
