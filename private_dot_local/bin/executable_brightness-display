@@ -1,0 +1,78 @@
+#!/bin/bash
+# Brightness wrapper: monitors without DDC/CI (listed below) are dimmed in
+# software via wl-gammarelay-rs; everything else goes to omarchy-brightness-display.
+# Usage: brightness-display [--no-osd] [--monitor NAME] [+N%|N%-|N%|off|on]
+
+SOFT_DIM_MONITORS=("HDMI-A-1")
+# Monitors with neither DDC/CI nor gamma control (e.g. a screen on an MCT T6
+# USB adapter, which runs on an EVDI virtual output). The level is stored in
+# $OVERLAY_STATE_DIR/overlay-NAME and the rune.display-brightness plugin draws
+# a click-through black overlay of matching opacity on that screen.
+OVERLAY_DIM_MONITORS=("DVI-I-1")
+OVERLAY_STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/rune-display-brightness"
+MIN_PERCENT=10
+
+args=("$@") no_osd=0 monitor=""
+while (( $# > 0 )); do
+  case "$1" in
+    --no-osd) no_osd=1; shift ;;
+    --monitor) monitor="$2"; shift 2 ;;
+    *) break ;;
+  esac
+done
+step="${1:-}"
+[[ -n $monitor ]] || monitor="$(omarchy-hyprland-monitor-focused 2>/dev/null)"
+
+overlay=0
+for m in "${OVERLAY_DIM_MONITORS[@]}"; do [[ $m == "$monitor" ]] && overlay=1; done
+if (( overlay )) && [[ $step != off && $step != on ]]; then
+  state="$OVERLAY_STATE_DIR/overlay-$monitor"
+  current=100
+  [[ -r $state ]] && read -r current <"$state"
+  [[ $current =~ ^[0-9]+$ ]] || current=100
+
+  if [[ -z $step ]]; then echo "$current"; exit 0; fi
+  if   [[ $step =~ ^\+([0-9]+)%$ ]]; then target=$(( current + BASH_REMATCH[1] ))
+  elif [[ $step =~ ^([0-9]+)%-$  ]]; then target=$(( current - BASH_REMATCH[1] ))
+  elif [[ $step =~ ^([0-9]+)%$   ]]; then target=${BASH_REMATCH[1]}
+  else exit 1; fi
+  (( target < MIN_PERCENT )) && target=$MIN_PERCENT
+  (( target > 100 )) && target=100
+
+  mkdir -p "$OVERLAY_STATE_DIR"
+  printf '%d\n' "$target" >"$state.tmp" && mv -f "$state.tmp" "$state"
+  (( no_osd )) || omarchy-osd -i brightness -p "$target" >/dev/null 2>&1
+  echo "$target"
+  exit 0
+fi
+
+soft=0
+for m in "${SOFT_DIM_MONITORS[@]}"; do [[ $m == "$monitor" ]] && soft=1; done
+if (( ! soft )) || [[ $step == off || $step == on ]]; then
+  exec omarchy-brightness-display "${args[@]}"
+fi
+
+path="/outputs/${monitor//-/_}"
+svc=rs.wl-gammarelay iface=rs.wl.gammarelay
+
+if ! busctl --user status "$svc" >/dev/null 2>&1; then
+  setsid -f wl-gammarelay-rs run >/dev/null 2>&1
+  sleep 0.5
+fi
+
+current=$(busctl --user get-property "$svc" "$path" "$iface" Brightness 2>/dev/null | awk '{printf "%d", $2*100+0.5}')
+[[ -n $current ]] || exit 1
+
+if [[ -z $step ]]; then echo "$current"; exit 0; fi
+
+if   [[ $step =~ ^\+([0-9]+)%$ ]]; then target=$(( current + BASH_REMATCH[1] ))
+elif [[ $step =~ ^([0-9]+)%-$  ]]; then target=$(( current - BASH_REMATCH[1] ))
+elif [[ $step =~ ^([0-9]+)%$   ]]; then target=${BASH_REMATCH[1]}
+else exit 1; fi
+
+(( target < MIN_PERCENT )) && target=$MIN_PERCENT
+(( target > 100 )) && target=100
+
+busctl --user set-property "$svc" "$path" "$iface" Brightness d "$(awk -v t="$target" 'BEGIN{printf "%.2f", t/100}')" || exit 1
+(( no_osd )) || omarchy-osd -i brightness -p "$target" >/dev/null 2>&1
+echo "$target"
