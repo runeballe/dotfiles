@@ -1,0 +1,20 @@
+schema_version = 1
+id = "konverter-til-tiff"
+name = "Konverter til TIFF"
+description = "Lag en TIFF-kopi ved siden av originalen. Originalen beholdes."
+icon = "image-x-generic"
+enabled = true
+menu = "top"
+
+[when]
+kinds = ["file"]
+extensions = ["jpg", "jpeg", "png", "webp", "pdf"]
+min_items = 1
+
+[run]
+runtime = "bash"
+entrypoint = "run.sh"
+mode = "per-item"
+on_error = "continue"
+working_directory = "parent"
+confirm = false
