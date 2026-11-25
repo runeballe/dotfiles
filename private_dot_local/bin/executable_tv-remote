@@ -30,14 +30,19 @@ if os.path.exists(CONF):
 NAME = base64.b64encode(b"Omarchy").decode()
 
 
+PENDING = {}  # bytes already read past the handshake, per socket
+
+
 def recv_exact(sock, n):
-    data = b""
+    data = PENDING.pop(sock, b"")
     while len(data) < n:
         chunk = sock.recv(n - len(data))
         if not chunk:
             raise ConnectionError("TV closed the connection")
         data += chunk
-    return data
+    if len(data) > n:
+        PENDING[sock] = data[n:]
+    return data[:n]
 
 
 def recv_frame(sock):
@@ -81,7 +86,10 @@ def connect(host):
         if not chunk:
             raise ConnectionError("no handshake reply")
         response += chunk
-    if b" 101 " not in response.split(b"\r\n", 1)[0]:
+    head, _, rest = response.partition(b"\r\n\r\n")
+    if rest:
+        PENDING[sock] = rest  # the first frame often rides in the same packet
+    if b" 101 " not in head.split(b"\r\n", 1)[0]:
         raise ConnectionError(response.split(b"\r\n", 1)[0].decode(errors="replace"))
     # Wait for ms.channel.connect (the TV sends it once access is allowed).
     sock.settimeout(30)
