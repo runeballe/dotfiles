@@ -5,7 +5,7 @@ import qs.Commons
 import qs.Ui
 
 // One HDMI-input button. Clicking it reveals two buttons, Xbox and PC, which
-// switch the Samsung TV input (`tv-remote xbox|pc`, ~/.local/bin/tv-remote;
+// switch the Samsung TV input (the bundled `tv-remote xbox|pc`;
 // key sequences and TV address in ~/.config/tv-remote.conf). Picking one, or
 // clicking the input button again, folds them away.
 BarWidget {
@@ -13,6 +13,9 @@ BarWidget {
   moduleName: "rune.tv-source"
 
   property bool open: false
+
+  // The plugin's own copy of tv-remote (Qt.resolvedUrl gives a file:// URL).
+  readonly property string helper: String(Qt.resolvedUrl("tv-remote")).replace(/^file:\/\//, "")
 
   readonly property var sources: [
     { id: "xbox", icon: "\u{F05BA}", tip: "TV: switch to Xbox" },
@@ -26,7 +29,7 @@ BarWidget {
     id: action
     running: false
     property string source: "pc"
-    command: ["sh", "-c", "exec \"$HOME/.local/bin/tv-remote\" \"$1\" || notify-send -u critical 'TV' 'Could not reach the TV'", "sh", action.source]
+    command: ["sh", "-c", "exec \"$1\" \"$2\" || notify-send -u critical 'TV' 'Could not reach the TV'", "sh", root.helper, action.source]
   }
 
   // Folds the choices away if nothing is picked.

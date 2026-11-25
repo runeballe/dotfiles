@@ -1,0 +1,11 @@
+# Copy to ~/.config/tv-remote.conf and set TV to your TV's IP address.
+TV=192.168.1.25
+
+# Key sequences, separated by spaces. Many Samsung TVs ignore the direct
+# KEY_HDMI1..4 keys, so these open the source list and step one input left or
+# right from the one the TV is on. Xbox on HDMI 2 is left of the PC on HDMI 3.
+XBOX=KEY_SOURCE KEY_LEFT KEY_ENTER
+PC=KEY_SOURCE KEY_RIGHT KEY_ENTER
+
+# Seconds between keys. The source list needs about a second to open.
+DELAY=1.2

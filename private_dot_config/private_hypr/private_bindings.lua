@@ -78,5 +78,5 @@ o.rebind("SUPER + SPACE", "Search apps", { menu = "apps" })
 o.bind("ALT + SPACE", "Omarchy menu", { menu = "root" })
 
 -- Samsung TV input (tv-remote, ~/.config/tv-remote.conf)
-o.bind("CTRL + ALT + X", "TV: switch to Xbox", os.getenv("HOME") .. "/.local/bin/tv-remote xbox")
-o.bind("CTRL + ALT + P", "TV: switch back to PC", os.getenv("HOME") .. "/.local/bin/tv-remote pc")
+o.bind("CTRL + ALT + X", "TV: switch to Xbox", os.getenv("HOME") .. "/.config/omarchy/plugins/rune.tv-source/tv-remote xbox")
+o.bind("CTRL + ALT + P", "TV: switch back to PC", os.getenv("HOME") .. "/.config/omarchy/plugins/rune.tv-source/tv-remote pc")
