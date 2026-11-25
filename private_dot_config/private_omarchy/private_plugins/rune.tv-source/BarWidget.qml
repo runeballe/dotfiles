@@ -4,8 +4,8 @@ import Quickshell.Io
 import qs.Commons
 import qs.Ui
 
-// One button with an HDMI-input icon: opens the source list on the Samsung TV
-// (sends KEY_SOURCE via ~/.local/bin/tv-remote; TV address in ~/.config/tv-remote.conf).
+// One button with an HDMI-input icon: switches the Samsung TV to the Xbox
+// (runs `tv-remote xbox` = XBOX key in ~/.config/tv-remote.conf, via ~/.local/bin/tv-remote; TV address in ~/.config/tv-remote.conf).
 BarWidget {
   id: root
   moduleName: "rune.tv-source"
@@ -16,7 +16,7 @@ BarWidget {
   Process {
     id: action
     running: false
-    command: ["sh", "-c", "exec \"$HOME/.local/bin/tv-remote\" KEY_SOURCE || notify-send -u critical 'TV' 'Could not reach the TV'"]
+    command: ["sh", "-c", "exec \"$HOME/.local/bin/tv-remote\" xbox || notify-send -u critical 'TV' 'Could not reach the TV'"]
   }
 
   Text {
@@ -33,7 +33,7 @@ BarWidget {
     anchors.fill: parent
     hoverEnabled: true
     cursorShape: Qt.PointingHandCursor
-    onEntered: if (root.bar) root.bar.showTooltip(root, "TV: open the source list")
+    onEntered: if (root.bar) root.bar.showTooltip(root, "TV: switch to Xbox")
     onExited: if (root.bar) root.bar.hideTooltip(root)
     onClicked: if (!action.running) action.running = true
   }
