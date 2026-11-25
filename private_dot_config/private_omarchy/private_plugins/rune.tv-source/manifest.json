@@ -4,7 +4,7 @@
   "name": "TV source",
   "version": "0.1.0",
   "author": "Rune Balstad",
-  "description": "Two bar buttons that switch the Samsung TV between the Xbox and the PC over its local network remote API.",
+  "description": "One bar button that reveals Xbox and PC buttons to switch the Samsung TV input over its local network remote API.",
   "kinds": ["bar-widget"],
   "entryPoints": { "barWidget": "BarWidget.qml" },
   "barWidget": {
