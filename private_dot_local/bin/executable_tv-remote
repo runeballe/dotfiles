@@ -5,7 +5,7 @@
     tv-remote KEY_SOURCE KEY_ENTER send several, with a short pause between
     tv-remote xbox | pc            switch to a source named in the config
 
-Uses the TV's local websocket API: ws://<tv>:8001/api/v2/channels/samsung.remote.control
+Uses the TV's local websocket API: wss://<tv>:8002/api/v2/channels/samsung.remote.control
 The first connection makes the TV ask "Allow?" on screen; accept it once.
 Config: ~/.config/tv-remote.conf (KEY=value lines): TV=, XBOX=, PC=, DELAY=
 Pure standard library, no pip packages.
@@ -14,11 +14,14 @@ import base64
 import json
 import os
 import socket
+import ssl
+import urllib.parse
 import struct
 import sys
 import time
 
 CONF = os.path.expanduser("~/.config/tv-remote.conf")
+TOKEN_FILE = os.path.expanduser("~/.config/tv-remote.token")
 cfg = {"TV": "192.168.1.25", "XBOX": "KEY_HDMI1", "PC": "KEY_HDMI2", "DELAY": "0.4"}
 if os.path.exists(CONF):
     for line in open(CONF, encoding="utf-8"):
@@ -74,11 +77,35 @@ def send_text(sock, text):
     sock.sendall(header + mask + bytes(c ^ mask[i % 4] for i, c in enumerate(payload)))
 
 
+def read_token():
+    try:
+        return open(TOKEN_FILE, encoding="utf-8").read().strip()
+    except OSError:
+        return ""
+
+
+def save_token(token):
+    fd = os.open(TOKEN_FILE, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "w") as f:
+        f.write(token)
+
+
 def connect(host):
-    sock = socket.create_connection((host, 8001), timeout=5)
+    # Port 8002 is the TLS websocket; newer firmware only acts on keys sent
+    # there, after the TV has approved this client once ("Allow" on screen).
+    # The TV then hands out a token, kept in ~/.config/tv-remote.token.
+    raw = socket.create_connection((host, 8002), timeout=5)
+    tls = ssl.create_default_context()
+    tls.check_hostname = False
+    tls.verify_mode = ssl.CERT_NONE  # the TV uses a self-signed certificate
+    sock = tls.wrap_socket(raw, server_hostname=host)
     key = base64.b64encode(os.urandom(16)).decode()
-    path = f"/api/v2/channels/samsung.remote.control?name={NAME}"
-    sock.sendall((f"GET {path} HTTP/1.1\r\nHost: {host}:8001\r\nUpgrade: websocket\r\n"
+    query = {"name": NAME}
+    token = read_token()
+    if token:
+        query["token"] = token
+    path = "/api/v2/channels/samsung.remote.control?" + urllib.parse.urlencode(query)
+    sock.sendall((f"GET {path} HTTP/1.1\r\nHost: {host}:8002\r\nUpgrade: websocket\r\n"
                   f"Connection: Upgrade\r\nSec-WebSocket-Key: {key}\r\nSec-WebSocket-Version: 13\r\n\r\n").encode())
     response = b""
     while b"\r\n\r\n" not in response:
@@ -90,17 +117,23 @@ def connect(host):
     if rest:
         PENDING[sock] = rest  # the first frame often rides in the same packet
     if b" 101 " not in head.split(b"\r\n", 1)[0]:
-        raise ConnectionError(response.split(b"\r\n", 1)[0].decode(errors="replace"))
-    # Wait for ms.channel.connect (the TV sends it once access is allowed).
-    sock.settimeout(30)
+        raise ConnectionError(head.split(b"\r\n", 1)[0].decode(errors="replace"))
+    # Wait for ms.channel.connect; the first time, the TV waits for "Allow".
+    sock.settimeout(60)
     while True:
         op, data = recv_frame(sock)
+        if op == 8:
+            raise PermissionError("TV closed the connection (choose Allow on the TV)")
         if op == 1:
-            event = json.loads(data).get("event", "")
+            message = json.loads(data)
+            event = message.get("event", "")
             if event == "ms.channel.connect":
+                new_token = (message.get("data") or {}).get("token")
+                if new_token and new_token != token:
+                    save_token(str(new_token))
                 return sock
             if event == "ms.channel.unauthorized":
-                raise PermissionError("TV refused access (choose Allow on the TV, or check Settings > General > External Device Manager)")
+                raise PermissionError("TV refused access (Settings > General > External Device Manager > Device Connection Manager)")
 
 
 def send_key(sock, key):
