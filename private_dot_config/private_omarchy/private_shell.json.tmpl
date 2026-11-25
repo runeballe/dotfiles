@@ -1,6 +1,6 @@
 {
   "bar": {
-    "background": "none",
+    "background": "glassy",
     "centerAnchor": "omarchy.clock",
     "id": "io.github.deunnis.lacquer.shell",
     "layout": {
@@ -17,24 +17,24 @@
           "agendaPlacement": "beside",
           "announceLeadMinutes": 60,
           "announceTitleLimit": 12,
+          "birthYear": {{ .birthYear }},
           "format": "HH:mm",
           "formatAlt": "d MMMM 'W'ww yyyy",
+          "hiddenCalendars": [
+            "ics-9553ecb8de56"
+          ],
+          "hideDeclined": true,
+          "language": "auto",
+          "reminderDetails": true,
+          "showLunarDates": false,
           "showNextUp": true,
           "showQuickAdd": true,
           "showShortcutLegend": true,
           "showUpcomingDays": true,
+          "showWorkingLocation": true,
           "showYearProgress": true,
           "verticalFormat": "h\n—\nmm\nAP",
-          "weekStartDay": "monday",
-          "hiddenCalendars": [
-            "ics-9553ecb8de56"
-          ],
-          "language": "auto",
-          "showWorkingLocation": true,
-          "hideDeclined": true,
-          "showLunarDates": false,
-          "reminderDetails": true,
-          "birthYear": {{ .birthYear }}
+          "weekStartDay": "monday"
         },
         {
           "accent": "red",
@@ -76,34 +76,29 @@
       ],
       "centerEnd": [
         {
-          "audioQuality": "320 kbps",
-          "clientId": "",
-          "deviceName": "Omarchy Spotify",
-          "fixedBarWidth": "Off",
-          "id": "quickshell.spotify",
-          "idleShutdownMinutes": 15,
-          "maxBarTextWidth": "240",
-          "scrollBarText": "Off",
-          "scrollSpeed": "1",
-          "shortcutHints": "On",
-          "shortcutPlayer": "Omarchy Music app",
-          "showArtistName": "Off",
-          "showArtwork": "On",
-          "showLyrics": "On",
-          "showMiniPlayer": "On",
-          "showPausedTrack": "On",
-          "showTrackTitle": "On",
-          "showVinylRecord": "On"
+          "id": "theboxer71.omnitiler"
         }
       ],
       "left": [
         {
           "id": "omarchy.menu"
+        },
+        {
+          "id": "omarchy.workspaces"
         }
       ],
       "right": [
         {
           "id": "omarchy.tray"
+        },
+        {
+          "id": "rune.tv-source"
+        },
+        {
+          "id": "jesseburlamaque.omarchy-find"
+        },
+        {
+          "id": "omarchy.tailscale"
         },
         {
           "id": "jack.display"
@@ -117,7 +112,9 @@
         {
           "id": "io.github.juancasanueva.plugin-manager",
           "openAs": "popup",
-          "transactionLimit": 36
+          "transactionLimit": 36,
+          "allowUnverifiedInstalls": true,
+          "allowUnverifiedUpdates": true
         },
         {
           "id": "omarchy.agents"
@@ -126,20 +123,16 @@
           "id": "omarchy.bluetooth"
         },
         {
+          "id": "rune.display-brightness"
+        },
+        {
           "id": "omarchy.network"
         },
         {
           "id": "rune.window-actions"
-        },
-        {
-          "id": "rune.display-brightness"
         }
       ],
-      "tray": [
-        {
-          "id": "freber.sonos"
-        }
-      ]
+      "tray": []
     },
     "position": "top",
     "transparent": false
@@ -151,8 +144,8 @@
     "omarchy.reminders",
     "omarchy.lock",
     "omarchy.dock",
-    "omarchy.clipboard",
-    "omarchy.disk-speedtest"
+    "omarchy.disk-speedtest",
+    "omarchy.osd"
   ],
   "dock": {
     "pinned": [
@@ -184,9 +177,6 @@
     },
     {
       "id": "hello-lock"
-    },
-    {
-      "id": "k4ditano.omascreen"
     },
     {
       "id": "io.github.smoothpixels.cursor-accent"
