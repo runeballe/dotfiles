@@ -15,6 +15,7 @@ hl.config({
       xray = true,
     },
     dim_around = 0.74,
+    dim_inactive = false,
     dim_modal = false,
     dim_special = 0.95,
     glow = {
@@ -31,7 +32,7 @@ hl.config({
 hl.config({
   general = {
     gaps_workspaces = 1,
-    layout = "scrolling",
+    layout = "dwindle",
     snap = {
       enabled = true,
       monitor_gap = 0,
@@ -75,19 +76,11 @@ hl.animation({ leaf = "workspaces", enabled = false })
 -- Workspaces set up from the Workspaces page.
 hl.workspace_rule({ workspace = "1", gaps_in = 0, gaps_out = 0, no_border = true, no_rounding = true, decorate = false })
 hl.monitor({
-  output = "desc:Dell Inc. DELL U2419H HWCDKS2",
-  mode = "1920x1080@60.00",
-  scale = 1.6,
-  transform = 0,
-  vrr = 0,
-  position = "720x1080",
-})
-
-hl.monitor({
   output = "desc:Samsung Electric Company SAMSUNG 0x01000000",
   mode = "3840x2160@30.00",
   scale = 2,
   transform = 0,
   vrr = 0,
+  position = "0x720",
 })
 
