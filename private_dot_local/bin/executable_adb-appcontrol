@@ -1,0 +1,11 @@
+#!/bin/bash
+# Start ADB AppControl (Windows app) under Wine.
+# The native Linux adb server is started first; the bundled adb.exe in Wine
+# then talks to it on localhost:5037 (same protocol 1.0.41), so USB devices
+# work too, not only Wi-Fi.
+set -u
+APP="$HOME/ADB_AppControl"
+adb start-server >/dev/null 2>&1 || true
+cd "$APP" || exit 1
+export WINEPREFIX="$HOME/.wine" WINEDEBUG=-all
+exec wine "$APP/ADBAppControl.exe" "$@"
