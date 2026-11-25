@@ -22,7 +22,9 @@ import time
 
 CONF = os.path.expanduser("~/.config/tv-remote.conf")
 TOKEN_FILE = os.path.expanduser("~/.config/tv-remote.token")
-cfg = {"TV": "192.168.1.25", "XBOX": "KEY_HDMI1", "PC": "KEY_HDMI2", "DELAY": "0.4"}
+# Direct KEY_HDMIn keys are ignored by this TV (UE65KU6075); open the source
+# list and step to the input instead. Xbox = HDMI 2, one step left of the PC.
+cfg = {"TV": "192.168.1.25", "XBOX": "KEY_SOURCE KEY_LEFT KEY_ENTER", "PC": "KEY_SOURCE KEY_RIGHT KEY_ENTER", "DELAY": "1.2"}
 if os.path.exists(CONF):
     for line in open(CONF, encoding="utf-8"):
         line = line.strip()
