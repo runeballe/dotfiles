@@ -24,6 +24,7 @@ require("hypr.input")
 require("hypr.bindings")
 require("hypr.snap") -- Windows-style snapping (drag to edges, SUPER+arrows)
 require("hypr.desktop") -- SUPER+D show desktop
+require("hypr.maximize-new") -- new windows open maximized (not dialogs/popups)
 require("hypr.no-workspaces") -- one desktop per screen, workspace keys off
 require("hypr.looknfeel")
 require("hypr.autostart")
