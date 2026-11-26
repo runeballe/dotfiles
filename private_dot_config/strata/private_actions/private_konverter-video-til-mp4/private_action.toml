@@ -1,0 +1,20 @@
+schema_version = 1
+id = "konverter-video-til-mp4"
+name = "Konverter til MP4"
+description = "Lag en MP4-kopi ved siden av originalen. Originalen beholdes."
+icon = "video-x-generic"
+enabled = true
+menu = "top"
+
+[when]
+kinds = ["file"]
+extensions = ["avi", "flv", "3gp"]
+min_items = 1
+
+[run]
+runtime = "bash"
+entrypoint = "run.sh"
+mode = "per-item"
+on_error = "continue"
+working_directory = "parent"
+confirm = false

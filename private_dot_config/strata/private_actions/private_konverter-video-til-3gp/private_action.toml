@@ -1,0 +1,20 @@
+schema_version = 1
+id = "konverter-video-til-3gp"
+name = "Konverter til 3GP"
+description = "Lag en 3GP-kopi ved siden av originalen. Originalen beholdes."
+icon = "video-x-generic"
+enabled = true
+menu = "top"
+
+[when]
+kinds = ["file"]
+extensions = ["mp4", "avi", "flv"]
+min_items = 1
+
+[run]
+runtime = "bash"
+entrypoint = "run.sh"
+mode = "per-item"
+on_error = "continue"
+working_directory = "parent"
+confirm = false
